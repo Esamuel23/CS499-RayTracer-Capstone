@@ -1,0 +1,22 @@
+# Build output
+build/
+out/
+Debug/
+Release/
+x64/
+*.o
+*.obj
+*.exe
+*.dll
+*.pdb
+*.ilk
+*.idb
+*.tlog
+*.ipch
+# IDE
+.vs/
+.vscode/ipch/
+*.vcxproj.user
+*.sln.docstates
+# Renders (commit only curated showcase images)
+*.ppm
