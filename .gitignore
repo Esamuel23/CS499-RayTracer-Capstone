@@ -20,3 +20,8 @@ x64/
 *.sln.docstates
 # Renders (commit only curated showcase images)
 *.ppm
+
+# Recordings and frame grabs (large binaries, not source)
+*.mp4
+*.mov
+_frames/
