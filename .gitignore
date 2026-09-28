@@ -25,3 +25,7 @@ x64/
 *.mp4
 *.mov
 _frames/
+
+# Local renders (curated PNGs live in docs/renders)
+*.bmp
+build-*/
