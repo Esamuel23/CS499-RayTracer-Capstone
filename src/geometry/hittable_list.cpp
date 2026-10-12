@@ -10,6 +10,8 @@
 #include <stdexcept>
 #include <utility>
 
+#include "accel/traversal_stats.h"
+
 namespace rt {
 
 void HittableList::add(std::unique_ptr<Hittable> object) {
@@ -17,6 +19,12 @@ void HittableList::add(std::unique_ptr<Hittable> object) {
         throw std::invalid_argument("Cannot add a null object to the scene");
     }
     objects_.push_back(std::move(object));
+}
+
+std::vector<std::unique_ptr<Hittable>> HittableList::release_objects() {
+    std::vector<std::unique_ptr<Hittable>> released = std::move(objects_);
+    objects_.clear();  // A moved-from vector is valid but unspecified. Make it empty.
+    return released;
 }
 
 bool HittableList::hit(const Ray& ray, double t_min, double t_max, HitRecord& record) const {
@@ -27,6 +35,7 @@ bool HittableList::hit(const Ray& ray, double t_min, double t_max, HitRecord& re
     double closest_so_far = t_max;
 
     for (const auto& object : objects_) {
+        count_primitive_test();  // Compiles to nothing unless stats are enabled.
         if (object->hit(ray, t_min, closest_so_far, candidate)) {
             hit_anything = true;
             closest_so_far = candidate.t;

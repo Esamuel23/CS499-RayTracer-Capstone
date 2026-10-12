@@ -16,6 +16,11 @@
 namespace rt {
 
 bool Aabb::hit(const Ray& ray, double t_min, double t_max) const {
+    double unused_enter = 0.0;
+    return hit(ray, t_min, t_max, unused_enter);
+}
+
+bool Aabb::hit(const Ray& ray, double t_min, double t_max, double& t_enter) const {
     for (int axis = 0; axis < 3; ++axis) {
         const double origin = ray.origin()[axis];
         const double direction = ray.direction()[axis];
@@ -44,7 +49,14 @@ bool Aabb::hit(const Ray& ray, double t_min, double t_max) const {
             return false;
         }
     }
+    t_enter = t_min;
     return true;
+}
+
+double Aabb::surface_area() const {
+    const Vec3 extent = max - min;
+    return 2.0 * (extent.x() * extent.y() + extent.y() * extent.z() +
+                  extent.z() * extent.x());
 }
 
 Aabb Aabb::surrounding(const Aabb& a, const Aabb& b) {

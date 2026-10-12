@@ -1,6 +1,6 @@
-# Enhancement Two Spec — Bounding Volume Hierarchy (Algorithms and Data Structures)
+# Enhancement Two Spec: Bounding Volume Hierarchy (Algorithms and Data Structures)
 
-Planning doc only. No implementation code — the C++ is yours to write.
+Planning doc only. No implementation code. The C++ is yours to write.
 Milestone Three wants: the enhancement, a narrative, and a zip of original + enhanced code.
 
 ---
@@ -24,7 +24,7 @@ Ray ──► HittableList ──► test ALL n shapes  Ray ──► Bvh ──
 
 Why it fits the category: it is a tree data structure, a recursive partitioning
 algorithm, a cost-model heuristic, and a measured complexity change. Outcome 3
-asks you to *evaluate* a solution and its trade-offs — the benchmark is the evaluation.
+asks you to *evaluate* a solution and its trade-offs, and the benchmark is the evaluation.
 
 ---
 
@@ -39,7 +39,7 @@ asks you to *evaluate* a solution and its trade-offs — the benchmark is the ev
 | `uint32 count` | 0 = interior node. >0 = leaf with this many primitives |
 
 - Right child of an interior node is stored at `left_or_first + 1` (children adjacent),
-  or store it explicitly — pick one and write down why in the header comment.
+  or store it explicitly. Pick one and write down why in the header comment.
 - Primitives are reordered into a `std::vector<std::unique_ptr<Hittable>>` so each leaf
   is a contiguous range. Ownership stays `unique_ptr`, consistent with Enhancement One.
 
@@ -148,14 +148,14 @@ Separate target `bench/bench_accel.cpp` → executable `raytracer_bench` (not ru
 - Scene: N random small spheres in a cube, fixed seed. N = 10, 100, 1,000, 10,000.
 - For each N and each structure (list, bvh), record:
   - build time (ms)
-  - render time (ms) at fixed resolution, 1 sample per pixel, 1 thread, max depth 1 (primary rays only — isolates the data structure)
+  - render time (ms) at fixed resolution, 1 sample per pixel, 1 thread, max depth 1 (primary rays only, to isolate the data structure)
   - average box tests and primitive tests per ray (optional counters behind a compile flag so they cost nothing in normal builds)
 - Repeat each run 5×, report the median.
 - Output CSV: `docs/bench/bvh_results.csv` → chart `docs/bench/bvh_chart.png` (log-log axes; list should be a straight slope-1 line, BVH nearly flat).
 - Record machine: CPU, compiler, build type. Put it under the chart.
 
 Expected shape (fill with real numbers): list grows ~linearly with N; BVH grows ~log N;
-crossover where BVH build cost stops paying back is probably at very small N — report it honestly.
+crossover where BVH build cost stops paying back is probably at very small N. Report it honestly.
 
 ---
 
@@ -172,10 +172,10 @@ crossover where BVH build cost stops paying back is probably at very small N —
 ## 7. Done when
 
 - [ ] All 10 tests pass on Windows + Linux CI with warnings as errors
-- [ ] List and BVH images are byte-identical on the desk and showcase scenes
+- [x] List and BVH images are byte-identical on the desk and showcase scenes
 - [ ] Benchmark CSV + chart committed under `docs/bench/`
-- [ ] README updated (status, before/after, chart, how to run the benchmark)
-- [ ] Every new file has the standard header (name, date, purpose, design notes)
+- [x] README updated (status, before/after, chart, how to run the benchmark)
+- [x] Every new file has the standard header (name, date, purpose, design notes)
 - [ ] Narrative placeholders filled with real numbers
 
 ## 8. Fallbacks if time gets tight

@@ -22,9 +22,15 @@ namespace rt::app {
 enum class SceneChoice { Desk, Showcase };
 enum class CameraChoice { Original, Closeup };
 
+// How the scene is searched for the closest hit. List tests every shape
+// (Enhancement One). Bvh uses the bounding volume hierarchy (Enhancement
+// Two). Both give the same image; Bvh is faster on large scenes.
+enum class AccelChoice { List, Bvh };
+
 struct Options {
     SceneChoice scene = SceneChoice::Showcase;
     CameraChoice camera = CameraChoice::Original;
+    AccelChoice accel = AccelChoice::Bvh;
     RenderSettings render;
     std::string output_path = "render.bmp";
     bool show_help = false;

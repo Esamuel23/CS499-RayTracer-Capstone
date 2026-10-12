@@ -10,8 +10,12 @@
 //   is deleted by hand. This replaces the original's raw new and delete,
 //   which the code review flagged for leaks and a rule-of-three problem.
 //
-//   Each ray is tested against every shape: O(n) per ray. That is the
-//   baseline Enhancement Two will replace with a bounding volume hierarchy.
+//   Each ray is tested against every shape: O(n) per ray. Enhancement Two
+//   adds a bounding volume hierarchy (src/accel/bvh.h) that answers the same
+//   question in O(log n) on average. The list stays as the trusted baseline:
+//   scenes are still built as a list, the tests compare the BVH against it,
+//   and --accel list renders with it. release_objects() hands the shapes
+//   to the BVH by moving the pointers, never by copying shapes.
 //=============================================================================
 #pragma once
 
@@ -29,6 +33,10 @@ public:
 
     // Takes ownership. Throws std::invalid_argument on a null pointer.
     void add(std::unique_ptr<Hittable> object);
+
+    // Moves every shape out and leaves the list empty. Used to give the
+    // scene's shapes to a Bvh without copying them.
+    std::vector<std::unique_ptr<Hittable>> release_objects();
 
     std::size_t size() const { return objects_.size(); }
     bool empty() const { return objects_.empty(); }

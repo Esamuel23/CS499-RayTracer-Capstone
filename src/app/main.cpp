@@ -11,14 +11,21 @@
 //   by hand, and skipped cleanup on some error paths. Here every object is
 //   a local with automatic lifetime, and every failure reaches one catch
 //   block that prints a message and returns a nonzero exit code.
+//
+//   Scenes are always built as a HittableList. With --accel bvh (the
+//   default) the list's shapes are moved into a Bvh, which is then what the
+//   renderer sees. The renderer only knows the Hittable interface, so it
+//   does not change at all.
 //=============================================================================
 #include <chrono>
+#include <cstddef>
 #include <exception>
 #include <iostream>
 #include <memory>
 #include <string>
 #include <vector>
 
+#include "accel/bvh.h"
 #include "app/options.h"
 #include "render/camera.h"
 #include "render/renderer.h"
@@ -37,6 +44,16 @@ int main(int argc, char* argv[]) {
         const auto world = (options.scene == rt::app::SceneChoice::Desk)
                                ? rt::scene::build_desk_scene()
                                : rt::scene::build_showcase_scene();
+        const std::size_t object_count = world->size();
+
+        // The Bvh takes the shapes out of the list. Only one of the two is
+        // used to render, and that one owns every shape.
+        std::unique_ptr<rt::Bvh> bvh;
+        if (options.accel == rt::app::AccelChoice::Bvh) {
+            bvh = std::make_unique<rt::Bvh>(world->release_objects());
+        }
+        const rt::Hittable& scene_to_render = bvh ? static_cast<const rt::Hittable&>(*bvh) : *world;
+        const char* accel_name = bvh ? "bvh" : "list";
 
         const double aspect_ratio =
             static_cast<double>(options.render.width) / options.render.height;
@@ -45,12 +62,13 @@ int main(int argc, char* argv[]) {
                                     : rt::scene::original_camera(aspect_ratio));
         const rt::Renderer renderer(options.render);
 
-        std::cout << "Rendering " << world->size() << " objects at " << options.render.width
+        std::cout << "Rendering " << object_count << " objects (" << accel_name << ") at "
+                  << options.render.width
                   << "x" << options.render.height << ", " << options.render.samples_per_pixel
                   << " samples per pixel...\n";
 
         const auto start = std::chrono::steady_clock::now();
-        const rt::Image image = renderer.render(*world, camera);
+        const rt::Image image = renderer.render(scene_to_render, camera);
         const auto elapsed = std::chrono::duration<double>(
             std::chrono::steady_clock::now() - start);
 

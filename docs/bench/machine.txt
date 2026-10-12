@@ -1,0 +1,3 @@
+Machine: Intel Xeon Processor @ 2.80GHz (Cascade Lake, KVM virtual machine, 2 vCPUs, 33 MiB L3), Ubuntu 24.04.5, Linux 6.18
+Build: g++ 13.3.0, CMake 3.28.3, CMAKE_BUILD_TYPE=Release (-O3 -DNDEBUG), RT_WARNINGS_AS_ERRORS=ON. Measured 2026-10-11.
+Scene: N spheres of radius 0.2, centers uniform in [-5, 5]^3, seed 499. Benchmark: bench/bench_accel.cpp.

@@ -64,6 +64,14 @@ Options parse_options(const std::vector<std::string>& arguments) {
             } else {
                 throw std::invalid_argument("--camera must be original or closeup");
             }
+        } else if (flag == "--accel") {
+            if (value == "list") {
+                options.accel = AccelChoice::List;
+            } else if (value == "bvh") {
+                options.accel = AccelChoice::Bvh;
+            } else {
+                throw std::invalid_argument("--accel must be list or bvh");
+            }
         } else if (flag == "--width") {
             options.render.width = to_int(flag, value);
         } else if (flag == "--height") {
@@ -96,6 +104,8 @@ std::string usage_text() {
     return "Usage: raytracer [options]\n"
            "  --scene desk|showcase  Scene to render (default showcase)\n"
            "  --camera original|closeup  Camera view (default original)\n"
+           "  --accel list|bvh       Closest-hit search: every shape, or the\n"
+           "                         bounding volume hierarchy (default bvh)\n"
            "  --width N              Image width in pixels (default 800)\n"
            "  --height N             Image height in pixels (default 640)\n"
            "  --samples N            Samples per pixel (default 64)\n"
